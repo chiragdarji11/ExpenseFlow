@@ -9,10 +9,13 @@ db_url = settings.DATABASE_URL
 if db_url.startswith("mysql://"):
     db_url = db_url.replace("mysql://", "mysql+pymysql://", 1)
 elif db_url.startswith("sqlite"):
-    if not db_url.startswith("sqlite:////") and ":\\" not in db_url and ":/" not in db_url:
+    if os.environ.get("VERCEL"):
+        db_url = "sqlite:////tmp/expense_flow.db"
+    elif not db_url.startswith("sqlite:////") and ":\\" not in db_url and ":/" not in db_url:
         db_name = db_url.replace("sqlite:///", "")
         db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), db_name).replace("\\", "/")
         db_url = f"sqlite:///{db_path}"
+
 
 
 
